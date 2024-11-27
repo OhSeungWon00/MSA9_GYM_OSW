@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+</head>
+<body>
+    <h1>QR 코드 생성</h1>
+
+    <form action="/generate-qr-code" method="post">
+        <button type="submit">QR 코드 생성</button>
+    </form>
+
+    <h3>QR 코드가 여기에 표시됩니다:</h3>
+    <img id="qrCodeImage" src="" alt="Generated QR Code" style="display:none;"/>
+
+    <script>
+        document.querySelector('form').onsubmit = function(event) {
+            event.preventDefault();
+            fetch('/generate-qr-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.blob())  // 이미지를 blob 형태로 받기
+            .then(imageBlob => {
+                const imageUrl = URL.createObjectURL(imageBlob);
+                const qrCodeImage = document.getElementById('qrCodeImage');
+                qrCodeImage.src = imageUrl;
+                qrCodeImage.style.display = 'block';  // 이미지 표시
+            })
+            .catch(error => {
+                console.error('QR 코드 생성에 실패했습니다.', error);
+            });
+        };
+    </script>
+</body>
+</html>
